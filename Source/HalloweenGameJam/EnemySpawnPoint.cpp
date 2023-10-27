@@ -3,6 +3,8 @@
 
 #include "EnemySpawnPoint.h"
 
+#include "Components/ArrowComponent.h"
+
 // Sets default values
 AEnemySpawnPoint::AEnemySpawnPoint()
 {
@@ -11,6 +13,9 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 
 	EnemySpawn = CreateOptionalDefaultSubobject<USceneComponent>(TEXT("Spawn"));
 	RootComponent = EnemySpawn;
+	SpawnDirection = CreateOptionalDefaultSubobject<UArrowComponent>(TEXT("Direction"));
+	SpawnDirection->ArrowColor = FColor::Red;
+	SpawnDirection->SetupAttachment(EnemySpawn);
 
 	LoadEnemyPrefabDataTable();
 

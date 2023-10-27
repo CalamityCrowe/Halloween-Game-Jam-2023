@@ -74,6 +74,7 @@ private:
 
 
 
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly)
@@ -84,5 +85,6 @@ protected:
 
 public:
 	FEntity_Stats GetEnemyStats()const { return  EnemyStats; }
+	inline void DamageEnemy(const float Damage) { EnemyStats.Health -= Damage; }
 
 };

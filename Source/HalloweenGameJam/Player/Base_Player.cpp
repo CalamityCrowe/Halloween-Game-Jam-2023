@@ -22,7 +22,7 @@ ABase_Player::ABase_Player()
 	CameraArm->SetupAttachment(GetCapsuleComponent());
 	CameraArm->TargetArmLength = 300.f;
 
-	
+
 
 	Camera->SetupAttachment(CameraArm);
 }
@@ -53,6 +53,9 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABase_Player::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABase_Player::Turn);
+
+
+		// TODO add player firing to the game and damage the enemies
 	}
 
 
@@ -69,6 +72,39 @@ void ABase_Player::Turn(const FInputActionValue& Value)
 		AddControllerPitchInput(LookVec.Y);
 	}
 }
+
+void ABase_Player::FireWeapon(const FInputActionValue& Value)
+{
+	float triggerVal = Value.Get<float>();
+	if (triggerVal >= 0.4f)
+	{
+
+		if (FHitResult* hitResult = LineTraceMethod(FVector(), FVector()))
+		{
+			// do hit logic here		
+		}
+
+		triggerVal = 0.f;
+	}
+}
+
+FHitResult* ABase_Player::LineTraceMethod(const FVector& StartLocation, const FVector& EndLocation)
+{
+	FHitResult* HitResult = new FHitResult();
+	FCollisionQueryParams CollisionParams;
+
+	CollisionParams.AddIgnoredActor(this);
+
+	DrawDebugLine(GetWorld(), StartLocation, StartLocation + EndLocation, FColor::Purple, false, 1.f, 0, 2);
+
+	if (GetWorld()->LineTraceSingleByChannel(*HitResult, StartLocation, StartLocation + EndLocation, ECC_Visibility, CollisionParams))
+	{
+		return HitResult;
+
+	}
+	return HitResult;
+}
+
 void ABase_Player::Move(const FInputActionValue& Value)
 {
 	FVector2D moveVal = Value.Get<FVector2D>();

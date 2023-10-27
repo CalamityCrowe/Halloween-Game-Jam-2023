@@ -59,6 +59,9 @@ private:
 	UPROPERTY()
 		TObjectPtr<UDataTable> EnemyData;
 
+	UPROPERTY(EditDefaultsOnly)
+		TObjectPtr<UArrowComponent> SpawnDirection;
+
 	void LoadEnemyPrefabDataTable();
 	void LoadEnemyPrefab(EenemyType);
 

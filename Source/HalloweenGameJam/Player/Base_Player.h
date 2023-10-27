@@ -53,14 +53,20 @@ private:
 
 	void Move(const FInputActionValue&);
 	void Turn(const FInputActionValue&);
+	void FireWeapon(const FInputActionValue&);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	FEntity_Stats PlayerStats;
+
 
 public:
 	TObjectPtr<UCameraComponent> GetCamera() const { return Camera; }
 	TObjectPtr<USpringArmComponent> GetCameraArm() const { return CameraArm; }
 
 	FEntity_Stats GetPlayerStats()const { return PlayerStats; }
+
+private:
+	FHitResult* LineTraceMethod(const FVector& StartLocation, const FVector& EndLocation);
+
 
 };
