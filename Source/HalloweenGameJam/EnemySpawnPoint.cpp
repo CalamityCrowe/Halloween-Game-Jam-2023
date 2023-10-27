@@ -6,11 +6,13 @@
 // Sets default values
 AEnemySpawnPoint::AEnemySpawnPoint()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	EnemySpawn = CreateOptionalDefaultSubobject<USceneComponent>(TEXT("Spawn"));
-	RootComponent = EnemySpawn; 
+	RootComponent = EnemySpawn;
+
+	LoadEnemyPrefabDataTable();
 
 }
 
@@ -18,7 +20,17 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 void AEnemySpawnPoint::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	LoadEnemyPrefab(EnemyType);
+
+	const FActorSpawnParameters SpawnParameters;
+
+	if (ABase_Enemy* newEnemy = GetWorld()->SpawnActor<ABase_Enemy>(EnemyReference, GetActorLocation(), GetActorRotation(), SpawnParameters))
+	{
+
+
+	}
+
 }
 
 // Called every frame
@@ -26,5 +38,36 @@ void AEnemySpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AEnemySpawnPoint::LoadEnemyPrefabDataTable()
+{
+	auto DataTable = ConstructorHelpers::FObjectFinder<UDataTable>(TEXT("DataTable'/Game/DataTables/DT_EnemyPrefabData.DT_EnemyPrefabData'"));
+	EnemyData = DataTable.Object;
+
+}
+
+void AEnemySpawnPoint::LoadEnemyPrefab(EenemyType newEnemy)
+{
+	EenemyType FindThisType = newEnemy;
+
+	FEnemyPrefabData* FoundRow = nullptr;
+
+	for (auto It : EnemyData->GetRowMap())
+	{
+		if (FEnemyPrefabData* Row = reinterpret_cast<FEnemyPrefabData*>(It.Value))
+		{
+			if (Row->ObjectType == FindThisType)
+			{
+				FoundRow = Row;
+				break;
+			}
+		}
+	}
+	if (FoundRow)
+	{
+		EnemyReference = FoundRow->ObjectPrefab;
+		EnemyHealth = FoundRow->ObjectHealth;
+	}
 }
 

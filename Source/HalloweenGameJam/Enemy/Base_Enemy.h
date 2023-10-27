@@ -22,18 +22,18 @@ enum class EenemyType : uint8
 };
 
 USTRUCT(BlueprintType)
-struct HALLOWEENGAMEJAM_API FEnemyData: public FTableRowBase
+struct HALLOWEENGAMEJAM_API FEnemyData : public FTableRowBase
 {
 	GENERATED_BODY()
-public: 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EenemyType ObjectType;
+		EenemyType ObjectType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<USkeletalMesh> ObjectMesh; 
+		TObjectPtr<USkeletalMesh> ObjectMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector ObjectScale;
+		FVector ObjectScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ABase_Enemy_Controller> ObjectController; 
+		TSubclassOf<ABase_Enemy_Controller> ObjectController;
 
 
 	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectController(nullptr)
@@ -66,23 +66,23 @@ private:
 
 	EenemyType EnemyType;
 
-	UPROPERTY() 
-	TObjectPtr<UDataTable> EnemyData; 
+	UPROPERTY()
+		TObjectPtr<UDataTable> EnemyData;
 
-	UPROPERTY() 
-	FEntity_Stats EnemyStats;
+	UPROPERTY()
+		FEntity_Stats EnemyStats;
 
 
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ABase_Enemy_Controller> EnemyController;
+		TSubclassOf<ABase_Enemy_Controller> EnemyController;
 
 	void LoadEnemyData(EenemyType);
-	void FindEnemyTypeFromData(EenemyType); 
+	void FindEnemyTypeFromData(EenemyType);
 
 public:
-	FEntity_Stats GetEnemyStats()const { return  EnemyStats;  }
+	FEntity_Stats GetEnemyStats()const { return  EnemyStats; }
 
 };
