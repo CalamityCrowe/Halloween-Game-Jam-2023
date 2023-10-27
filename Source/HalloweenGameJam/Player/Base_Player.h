@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "HalloweenGameJam/Entity_Stats.h"
 #include "Base_Player.generated.h"
 
-class USpringArmComponent; 
-class UCameraComponent; 
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class HALLOWEENGAMEJAM_API ABase_Player : public ACharacter
@@ -22,10 +23,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
 
 
-public:	
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -34,9 +35,9 @@ public:
 
 
 private:
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<USpringArmComponent> CameraArm;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCameraComponent> Camera;
 
 	/** Jump Input Action */
@@ -50,14 +51,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
-	void Move( const FInputActionValue&);
-	void Turn( const FInputActionValue&);
+	void Move(const FInputActionValue&);
+	void Turn(const FInputActionValue&);
 
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	FEntity_Stats PlayerStats;
 
 public:
-	TObjectPtr<UCameraComponent> GetCamera() const { return Camera;  }
-	TObjectPtr<USpringArmComponent> GetCameraArm() const { return CameraArm;  }
+	TObjectPtr<UCameraComponent> GetCamera() const { return Camera; }
+	TObjectPtr<USpringArmComponent> GetCameraArm() const { return CameraArm; }
 
+	FEntity_Stats GetPlayerStats()const { return PlayerStats; }
 
 };

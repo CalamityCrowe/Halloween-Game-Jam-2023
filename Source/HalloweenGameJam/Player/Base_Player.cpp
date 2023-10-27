@@ -22,6 +22,7 @@ ABase_Player::ABase_Player()
 	CameraArm->SetupAttachment(GetCapsuleComponent());
 	CameraArm->TargetArmLength = 300.f;
 
+	
 
 	Camera->SetupAttachment(CameraArm);
 }
