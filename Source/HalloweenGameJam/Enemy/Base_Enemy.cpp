@@ -15,7 +15,6 @@ ABase_Enemy::ABase_Enemy()
 void ABase_Enemy::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -65,6 +64,7 @@ void ABase_Enemy::FindEnemyTypeFromData(EenemyType newEnemyType)
 		EnemyType = FoundRow->ObjectType;
 		GetMesh()->SetSkeletalMesh(FoundRow->ObjectMesh);
 		SetActorScale3D(FoundRow->ObjectScale);
+		EnemyController = FoundRow->ObjectController;
 	}
 }
 

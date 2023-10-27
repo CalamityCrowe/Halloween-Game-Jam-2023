@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Engine/DataTable.h"
+#include  "HalloweenGameJam/Entity_Stats.h"
 #include "Base_Enemy.generated.h"
+
+class ABase_Enemy_Controller;
 
 UENUM()
 enum class EenemyType : uint8
@@ -29,11 +32,12 @@ public:
 	TObjectPtr<USkeletalMesh> ObjectMesh; 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector ObjectScale;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ABase_Enemy_Controller> ObjectController; 
 
 
-	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector())
+	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectController(nullptr)
 	{
-			
 
 	}
 };
@@ -62,11 +66,23 @@ private:
 
 	EenemyType EnemyType;
 
+	UPROPERTY() 
 	TObjectPtr<UDataTable> EnemyData; 
+
+	UPROPERTY() 
+	FEntity_Stats EnemyStats;
+
+
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ABase_Enemy_Controller> EnemyController;
+
 	void LoadEnemyData(EenemyType);
 	void FindEnemyTypeFromData(EenemyType); 
+
+public:
+	FEntity_Stats GetEnemyStats()const { return  EnemyStats;  }
 
 };
