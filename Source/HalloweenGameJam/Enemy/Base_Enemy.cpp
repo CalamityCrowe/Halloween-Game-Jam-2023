@@ -2,8 +2,12 @@
 
 
 #include "Base_Enemy.h"
+
+#include "Base_Enemy_Controller.h"
+#include "EngineUtils.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "HalloweenGameJam/Player/Base_Player.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -24,7 +28,7 @@ ABase_Enemy::ABase_Enemy()
 	{
 		PrimComponent->SetSimulatePhysics(true);  // sets the physics of the component
 	}
-
+	SetRole(ROLE_Authority); 
 }
 
 // Called when the game starts or when spawned
@@ -33,6 +37,11 @@ void ABase_Enemy::BeginPlay()
 	Super::BeginPlay();
 
 	UpdateCollisionSize();
+
+	for (TActorIterator<ABase_Player> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		PlayerRef = *ActorItr; 
+	}
 }
 
 void ABase_Enemy::UpdateCollisionSize()
@@ -54,7 +63,7 @@ void ABase_Enemy::UpdateCollisionSize()
 void ABase_Enemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UpdateCollisionSize(); 
+	UpdateCollisionSize();
 
 }
 
@@ -98,8 +107,8 @@ void ABase_Enemy::FindEnemyTypeFromData(EenemyType newEnemyType)
 		GetMesh()->SetSkeletalMesh(FoundRow->ObjectMesh);
 		GetMesh()->SetSkeletalMesh(FoundRow->ObjectMesh);
 		GetMesh()->SetRelativeScale3D(FoundRow->ObjectScale);
-		EnemyController = FoundRow->ObjectController;
 		GetMesh()->SetAnimInstanceClass(FoundRow->ObjectAnimation->GeneratedClass);
+
 	}
 }
 

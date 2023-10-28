@@ -15,6 +15,7 @@ class HALLOWEENGAMEJAM_API ABase_Enemy_Controller : public AAIController
 	GENERATED_BODY()
 public:
 	ABase_Enemy_Controller();
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -22,7 +23,11 @@ protected:
 
 	virtual void OnPossess(APawn* InPawn) override;
 
+	virtual void MoveActor(FVector);
+
 private:
 	class UNavigationSystemV1* NavArea; 
 
+
+	float time; 
 };

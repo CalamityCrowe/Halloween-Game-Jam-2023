@@ -22,9 +22,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+		void SpawnSignal(); 
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TObjectPtr<USceneComponent> SpawnRoot;
@@ -40,6 +45,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UChildActorComponent> Spawner5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
-	TArray<EenemyType> SpawnerTypes; 
+	TArray<EenemyType> SpawnerTypes;
 
 };

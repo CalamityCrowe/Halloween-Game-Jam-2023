@@ -40,6 +40,7 @@ class HALLOWEENGAMEJAM_API AEnemySpawnPoint : public AActor
 public:
 	// Sets default values for this actor's properties
 	AEnemySpawnPoint();
+	void SpawnEnemyPrefab();
 
 protected:
 	// Called when the game starts or when spawned
@@ -71,6 +72,10 @@ private:
 public:
 	USceneComponent* GetSpawnPoint() const { return EnemySpawn; }
 
-	void SetEnemyType(EenemyType newEnemy) { EnemyType = newEnemy;  };
+	void SetEnemyType(EenemyType newEnemy)
+	{
+		EnemyType = newEnemy;
+		LoadEnemyPrefab(newEnemy); 
+	};
 
 };

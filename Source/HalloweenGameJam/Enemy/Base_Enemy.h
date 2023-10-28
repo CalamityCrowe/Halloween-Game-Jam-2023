@@ -29,18 +29,16 @@ struct HALLOWEENGAMEJAM_API FEnemyData : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EenemyType ObjectType;
+		EenemyType ObjectType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<USkeletalMesh> ObjectMesh;
+		TObjectPtr<USkeletalMesh> ObjectMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector ObjectScale;
+		FVector ObjectScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ABase_Enemy_Controller> ObjectController;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UAnimBlueprint> ObjectAnimation;
+		TObjectPtr<UAnimBlueprint> ObjectAnimation;
 
 
-	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectController(nullptr), ObjectAnimation(nullptr)
+	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectAnimation(nullptr)
 	{
 
 	}
@@ -73,20 +71,18 @@ private:
 	EenemyType EnemyType;
 
 	UPROPERTY()
-	TObjectPtr<UDataTable> EnemyData;
+		TObjectPtr<UDataTable> EnemyData;
 
 	UPROPERTY()
-	FEntity_Stats EnemyStats;
+		FEntity_Stats EnemyStats;
 
 	UPROPERTY()
-	TObjectPtr<UArrowComponent> EnemyDirection;
+		TObjectPtr<UArrowComponent> EnemyDirection;
 
-
+	TObjectPtr<class ABase_Player> PlayerRef;
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<ABase_Enemy_Controller> EnemyController;
 
 	void LoadEnemyData(EenemyType);
 	void FindEnemyTypeFromData(EenemyType);
@@ -95,4 +91,5 @@ public:
 	FEntity_Stats GetEnemyStats()const { return  EnemyStats; }
 	inline void DamageEnemy(const float Damage) { EnemyStats.Health -= Damage; }
 
+	ABase_Player* GetPlayer()const { return PlayerRef; }
 };

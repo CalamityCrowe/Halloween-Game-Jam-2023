@@ -4,6 +4,7 @@
 #include "EnemySpawnPoint.h"
 #include "Enemy/Base_Enemy.h"
 #include "Components/ArrowComponent.h"
+#include "Enemy/Base_Enemy_Controller.h"
 
 // Sets default values
 AEnemySpawnPoint::AEnemySpawnPoint()
@@ -21,6 +22,24 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 
 }
 
+void AEnemySpawnPoint::SpawnEnemyPrefab()
+{
+	const FActorSpawnParameters SpawnParameters;
+
+	if (ABase_Enemy_Controller* NewController = GetWorld()->SpawnActor<ABase_Enemy_Controller>(ABase_Enemy_Controller::StaticClass()))
+	{
+		if (ABase_Enemy* newEnemy = GetWorld()->SpawnActor<ABase_Enemy>(EnemyReference, GetActorLocation(), GetActorRotation(), SpawnParameters))
+		{
+			NewController->Possess(newEnemy);
+			newEnemy->AIControllerClass = ABase_Enemy_Controller::StaticClass();
+			newEnemy->Controller = NewController;
+		}
+	}
+
+}
+
+
+
 // Called when  the game starts or when spawned
 void AEnemySpawnPoint::BeginPlay()
 {
@@ -28,13 +47,7 @@ void AEnemySpawnPoint::BeginPlay()
 
 	LoadEnemyPrefab(EnemyType);
 
-	const FActorSpawnParameters SpawnParameters;
-
-	if (ABase_Enemy* newEnemy = GetWorld()->SpawnActor<ABase_Enemy>(EnemyReference, GetActorLocation(), GetActorRotation(), SpawnParameters))
-	{
-
-
-	}
+	SpawnEnemyPrefab();
 
 }
 
