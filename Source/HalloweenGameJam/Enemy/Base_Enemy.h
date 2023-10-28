@@ -21,22 +21,34 @@ enum class EenemyType : uint8
 	Zombie
 };
 
+UENUM(Blueprintable)
+enum class EEnemyStates: uint8
+{
+	Idle,
+	Moving,
+	Attacking,
+	Taunting, 
+	Death
+};
+
 USTRUCT(BlueprintType)
 struct HALLOWEENGAMEJAM_API FEnemyData : public FTableRowBase
 {
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		EenemyType ObjectType;
+	EenemyType ObjectType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TObjectPtr<USkeletalMesh> ObjectMesh;
+	TObjectPtr<USkeletalMesh> ObjectMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FVector ObjectScale;
+	FVector ObjectScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TSubclassOf<ABase_Enemy_Controller> ObjectController;
+	TSubclassOf<ABase_Enemy_Controller> ObjectController;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<UAnimBlueprint> ObjectAnimation; 
 
 
-	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectController(nullptr)
+	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectController(nullptr), ObjectAnimation(nullptr)
 	{
 
 	}
@@ -56,6 +68,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void UpdateCollisionSize();
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -67,18 +81,20 @@ private:
 	EenemyType EnemyType;
 
 	UPROPERTY()
-		TObjectPtr<UDataTable> EnemyData;
+	TObjectPtr<UDataTable> EnemyData;
 
 	UPROPERTY()
-		FEntity_Stats EnemyStats;
+	FEntity_Stats EnemyStats;
 
+	UPROPERTY()
+	TObjectPtr<UArrowComponent> EnemyDirection;
 
 
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<ABase_Enemy_Controller> EnemyController;
+	TSubclassOf<ABase_Enemy_Controller> EnemyController;
 
 	void LoadEnemyData(EenemyType);
 	void FindEnemyTypeFromData(EenemyType);
