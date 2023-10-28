@@ -2,7 +2,7 @@
 
 
 #include "EnemySpawnPoint.h"
-
+#include "Enemy/Base_Enemy.h"
 #include "Components/ArrowComponent.h"
 
 // Sets default values

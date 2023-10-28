@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
-#include "Enemy/Base_Enemy.h"
+#include "EnemyTypes.h"
 #include "EnemySpawnPoint.generated.h"
 
 
 class ABase_Enemy;
+class UArrowComponent; 
 
 
 USTRUCT(BlueprintType)
@@ -69,4 +70,7 @@ private:
 
 public:
 	USceneComponent* GetSpawnPoint() const { return EnemySpawn; }
+
+	void SetEnemyType(EenemyType newEnemy) { EnemyType = newEnemy;  };
+
 };

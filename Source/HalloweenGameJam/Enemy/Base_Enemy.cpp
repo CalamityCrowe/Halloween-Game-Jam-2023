@@ -17,8 +17,14 @@ ABase_Enemy::ABase_Enemy()
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
 
-	
-	
+	GetCapsuleComponent()->BodyInstance.bLockXRotation = true;
+	GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
+
+	if (UPrimitiveComponent* PrimComponent = Cast<UPrimitiveComponent>(RootComponent))
+	{
+		PrimComponent->SetSimulatePhysics(true);  // sets the physics of the component
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -48,7 +54,7 @@ void ABase_Enemy::UpdateCollisionSize()
 void ABase_Enemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	EnemyType = EenemyType::None;
+	UpdateCollisionSize(); 
 
 }
 
@@ -91,7 +97,7 @@ void ABase_Enemy::FindEnemyTypeFromData(EenemyType newEnemyType)
 		EnemyType = FoundRow->ObjectType;
 		GetMesh()->SetSkeletalMesh(FoundRow->ObjectMesh);
 		GetMesh()->SetSkeletalMesh(FoundRow->ObjectMesh);
-		SetActorScale3D(FoundRow->ObjectScale);
+		GetMesh()->SetRelativeScale3D(FoundRow->ObjectScale);
 		EnemyController = FoundRow->ObjectController;
 		GetMesh()->SetAnimInstanceClass(FoundRow->ObjectAnimation->GeneratedClass);
 	}

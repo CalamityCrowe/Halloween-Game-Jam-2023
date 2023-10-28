@@ -6,28 +6,20 @@
 #include "GameFramework/Character.h"
 #include "Engine/DataTable.h"
 #include  "HalloweenGameJam/Entity_Stats.h"
+#include "HalloweenGameJam/EnemyTypes.h"
 #include "Base_Enemy.generated.h"
 
 class ABase_Enemy_Controller;
 
-UENUM()
-enum class EenemyType : uint8
-{
-	None,
-	Ghoul,
-	Goblin,
-	Lich,
-	Skeleton,
-	Zombie
-};
+
 
 UENUM(Blueprintable)
-enum class EEnemyStates: uint8
+enum class EEnemyStates : uint8
 {
 	Idle,
 	Moving,
 	Attacking,
-	Taunting, 
+	Taunting,
 	Death
 };
 
@@ -44,8 +36,8 @@ public:
 	FVector ObjectScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ABase_Enemy_Controller> ObjectController;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TObjectPtr<UAnimBlueprint> ObjectAnimation; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimBlueprint> ObjectAnimation;
 
 
 	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectController(nullptr), ObjectAnimation(nullptr)
