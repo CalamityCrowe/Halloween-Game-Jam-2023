@@ -64,7 +64,7 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABase_Player::Turn);
 
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &ABase_Player::TriggerHeld);
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &ABase_Player::TriggerReleased);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Canceled, this, &ABase_Player::TriggerReleased);
 	}
 
 
