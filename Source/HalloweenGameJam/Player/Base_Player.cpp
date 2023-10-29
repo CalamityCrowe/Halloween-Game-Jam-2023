@@ -67,8 +67,6 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &ABase_Player::TriggerReleased);
 	}
 
-
-
 }
 
 void ABase_Player::Turn(const FInputActionValue& Value)
@@ -87,9 +85,9 @@ void ABase_Player::FireWeapon(float DeltaTime)
 	timer += DeltaTime;
 	if (timer >= triggerInterval)
 	{
-		FHitResult hitResult; 
+		FHitResult hitResult;
 
-		if (LineTraceMethod(hitResult)) 
+		if (LineTraceMethod(hitResult))
 		{
 			// do hit logic here	
 			if (hitResult.GetActor()->IsA<ABase_Enemy>())
@@ -97,10 +95,10 @@ void ABase_Player::FireWeapon(float DeltaTime)
 				ABase_Enemy* enemy = Cast<ABase_Enemy>(hitResult.GetActor());
 				enemy->DamageEnemy(10.f);
 				GEngine->AddOnScreenDebugMessage(110, 2, FColor::Yellow, TEXT("Hit"));
-			}		
+			}
 		}
 
-			
+
 
 		timer = 0.f;
 	}
@@ -109,9 +107,9 @@ void ABase_Player::FireWeapon(float DeltaTime)
 bool ABase_Player::LineTraceMethod(FHitResult& OutHit)
 {
 	FVector start = FirePoint->GetComponentLocation();
-	FVector end = start +  Camera->GetForwardVector() * 10000;
+	FVector end = start + Camera->GetForwardVector() * 10000;
 
-	
+
 	DrawDebugLine(GetWorld(), start, end, FColor::Purple, false, 1.f, 0, 2);
 
 	FCollisionQueryParams parameters;
