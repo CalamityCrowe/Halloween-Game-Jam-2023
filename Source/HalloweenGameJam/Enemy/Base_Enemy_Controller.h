@@ -23,11 +23,12 @@ protected:
 
 	virtual void OnPossess(APawn* InPawn) override;
 
-	virtual void MoveActor(FVector);
+	
+public: 
+	void MoveActor(AActor*);
 
 private:
-	class UNavigationSystemV1* NavArea; 
-
+	 
 
 	float time; 
 };

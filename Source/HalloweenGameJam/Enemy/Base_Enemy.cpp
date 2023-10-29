@@ -23,12 +23,20 @@ ABase_Enemy::ABase_Enemy()
 
 	GetCapsuleComponent()->BodyInstance.bLockXRotation = true;
 	GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
+	GetCapsuleComponent()->SetCollisionProfileName("BlockAll"); 
 
-	if (UPrimitiveComponent* PrimComponent = Cast<UPrimitiveComponent>(RootComponent))
-	{
-		PrimComponent->SetSimulatePhysics(true);  // sets the physics of the component
-	}
-	SetRole(ROLE_Authority); 
+
+	EnemyStats.bIsDead = false; 
+
+	CurrentState = EEnemyStates::Idle; 
+	
+		if (UPrimitiveComponent* PrimComponent = Cast<UPrimitiveComponent>(RootComponent))
+		{
+			//PrimComponent->SetSimulatePhysics(true);  // sets the physics of the component
+
+		}
+	SetRole(ROLE_Authority);
+
 }
 
 // Called when the game starts or when spawned
@@ -40,7 +48,7 @@ void ABase_Enemy::BeginPlay()
 
 	for (TActorIterator<ABase_Player> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
-		PlayerRef = *ActorItr; 
+		PlayerRef = *ActorItr;
 	}
 }
 
@@ -65,6 +73,21 @@ void ABase_Enemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	UpdateCollisionSize();
 
+	HandleEnemyStates(); 
+	HandleEnemyDeath();
+
+	if (ABase_Enemy_Controller* enemyCont = Cast<ABase_Enemy_Controller>(GetController()))
+	{
+		if (EnemyStats.bIsDead ==false) 
+		{
+			enemyCont->MoveActor(PlayerRef);
+		}
+		else
+		{
+			enemyCont->StopMovement();
+		}
+	}
+
 }
 
 // Called to bind functionality to input
@@ -72,6 +95,30 @@ void ABase_Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ABase_Enemy::HandleEnemyDeath()
+{
+	if (EnemyStats.bIsDead == true && GetMesh()->IsPlaying() == false)
+	{
+		Destroy();
+	}
+
+}
+
+void ABase_Enemy::HandleEnemyStates()
+{
+	FVector EnemyVelocity = GetVelocity();
+	float EnemySpeedSqr = EnemyVelocity.SizeSquared();
+
+	CurrentState = (EnemySpeedSqr > 0.0f) ? EEnemyStates::Moving : EEnemyStates::Idle;
+	CurrentState = (EnemyStats.Health <= 0.0f) ? EEnemyStates::Death : CurrentState;
+
+	if (CurrentState == EEnemyStates::Death)
+	{
+		GEngine->AddOnScreenDebugMessage(0, 2, FColor::Cyan, TEXT("AAAAAAAAAAAAAAA"));
+		EnemyStats.bIsDead = true;
+	}
 }
 
 void ABase_Enemy::LoadEnemyData(EenemyType newEnemyType)
@@ -108,7 +155,7 @@ void ABase_Enemy::FindEnemyTypeFromData(EenemyType newEnemyType)
 		GetMesh()->SetSkeletalMesh(FoundRow->ObjectMesh);
 		GetMesh()->SetRelativeScale3D(FoundRow->ObjectScale);
 		GetMesh()->SetAnimInstanceClass(FoundRow->ObjectAnimation->GeneratedClass);
-
+		GetCharacterMovement()->MaxWalkSpeed = FoundRow->ObjectSpeed;
 	}
 }
 

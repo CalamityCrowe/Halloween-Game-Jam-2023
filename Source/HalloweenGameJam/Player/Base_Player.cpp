@@ -7,6 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HalloweenGameJam/Enemy/Base_Enemy.h"
+#include "HalloweenGameJam/Enemy/Lich.h"
+#include "HalloweenGameJam/Enemy/Ghoul.h"
 
 
 // Sets default values
@@ -22,9 +25,12 @@ ABase_Player::ABase_Player()
 	CameraArm->SetupAttachment(GetCapsuleComponent());
 	CameraArm->TargetArmLength = 300.f;
 
-
+	FirePoint = CreateOptionalDefaultSubobject<USceneComponent>(TEXT("Fire Point"));
+	FirePoint->SetupAttachment(GetCapsuleComponent());
 
 	Camera->SetupAttachment(CameraArm);
+
+	isHeld = false;
 }
 
 // Called when the game starts or when spawned
@@ -38,7 +44,10 @@ void ABase_Player::BeginPlay()
 void ABase_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (isHeld)
+	{
+		FireWeapon(DeltaTime);
+	}
 }
 
 // Called to bind functionality to input
@@ -54,8 +63,8 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABase_Player::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABase_Player::Turn);
 
-
-		// TODO add player firing to the game and damage the enemies
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &ABase_Player::TriggerHeld);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Canceled, this, &ABase_Player::TriggerReleased);
 	}
 
 
@@ -73,36 +82,45 @@ void ABase_Player::Turn(const FInputActionValue& Value)
 	}
 }
 
-void ABase_Player::FireWeapon(const FInputActionValue& Value)
+void ABase_Player::FireWeapon(float DeltaTime)
 {
-	float triggerVal = Value.Get<float>();
-	if (triggerVal >= 0.4f)
+	timer += DeltaTime;
+	if (timer >= triggerInterval)
 	{
+		FHitResult hitResult; 
 
-		if (FHitResult* hitResult = LineTraceMethod(FVector(), FVector()))
+		if (LineTraceMethod(hitResult)) 
 		{
-			// do hit logic here		
+			// do hit logic here	
+			if (hitResult.GetActor()->IsA<ABase_Enemy>())
+			{
+				ABase_Enemy* enemy = Cast<ABase_Enemy>(hitResult.GetActor());
+				enemy->DamageEnemy(10.f);
+				GEngine->AddOnScreenDebugMessage(110, 2, FColor::Yellow, TEXT("Hit"));
+			}		
 		}
 
-		triggerVal = 0.f;
+			
+
+		timer = 0.f;
 	}
 }
 
-FHitResult* ABase_Player::LineTraceMethod(const FVector& StartLocation, const FVector& EndLocation)
+bool ABase_Player::LineTraceMethod(FHitResult& OutHit)
 {
-	FHitResult* HitResult = new FHitResult();
-	FCollisionQueryParams CollisionParams;
+	FVector start = FirePoint->GetComponentLocation();
+	FVector end = start +  Camera->GetForwardVector() * 10000;
 
-	CollisionParams.AddIgnoredActor(this);
+	
+	DrawDebugLine(GetWorld(), start, end, FColor::Purple, false, 1.f, 0, 2);
 
-	DrawDebugLine(GetWorld(), StartLocation, StartLocation + EndLocation, FColor::Purple, false, 1.f, 0, 2);
+	FCollisionQueryParams parameters;
 
-	if (GetWorld()->LineTraceSingleByChannel(*HitResult, StartLocation, StartLocation + EndLocation, ECC_Visibility, CollisionParams))
-	{
-		return HitResult;
+	parameters.AddIgnoredActor(this);
 
-	}
-	return HitResult;
+
+	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end, ECC_Visibility, parameters);
+
 }
 
 void ABase_Player::Move(const FInputActionValue& Value)

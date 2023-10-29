@@ -33,6 +33,7 @@ void AEnemySpawnPoint::SpawnEnemyPrefab()
 			NewController->Possess(newEnemy);
 			newEnemy->AIControllerClass = ABase_Enemy_Controller::StaticClass();
 			newEnemy->Controller = NewController;
+			newEnemy->SetHealth(EnemyHealth);
 		}
 	}
 
@@ -86,6 +87,7 @@ void AEnemySpawnPoint::LoadEnemyPrefab(EenemyType newEnemy)
 	{
 		EnemyReference = FoundRow->ObjectPrefab;
 		EnemyHealth = FoundRow->ObjectHealth;
+
 	}
 }
 

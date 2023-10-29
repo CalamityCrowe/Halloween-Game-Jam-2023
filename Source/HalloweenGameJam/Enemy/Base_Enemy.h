@@ -14,7 +14,7 @@ class ABase_Enemy_Controller;
 
 
 UENUM(Blueprintable)
-enum class EEnemyStates : uint8
+enum  EEnemyStates : uint8
 {
 	Idle,
 	Moving,
@@ -29,16 +29,17 @@ struct HALLOWEENGAMEJAM_API FEnemyData : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		EenemyType ObjectType;
+	EenemyType ObjectType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TObjectPtr<USkeletalMesh> ObjectMesh;
+	TObjectPtr<USkeletalMesh> ObjectMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FVector ObjectScale;
+	FVector ObjectScale;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		TObjectPtr<UAnimBlueprint> ObjectAnimation;
+	TObjectPtr<UAnimBlueprint> ObjectAnimation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ObjectSpeed;
 
-
-	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectAnimation(nullptr)
+	FEnemyData() :ObjectType(EenemyType::None), ObjectMesh(nullptr), ObjectScale(FVector()), ObjectAnimation(nullptr), ObjectSpeed(0)
 	{
 
 	}
@@ -71,15 +72,19 @@ private:
 	EenemyType EnemyType;
 
 	UPROPERTY()
-		TObjectPtr<UDataTable> EnemyData;
+	TObjectPtr<UDataTable> EnemyData;
 
 	UPROPERTY()
-		FEntity_Stats EnemyStats;
+	FEntity_Stats EnemyStats;
 
 	UPROPERTY()
-		TObjectPtr<UArrowComponent> EnemyDirection;
+	TObjectPtr<UArrowComponent> EnemyDirection;
 
 	TObjectPtr<class ABase_Player> PlayerRef;
+
+	void HandleEnemyDeath();
+	void HandleEnemyStates();
+
 
 protected:
 
@@ -87,9 +92,17 @@ protected:
 	void LoadEnemyData(EenemyType);
 	void FindEnemyTypeFromData(EenemyType);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TEnumAsByte<EEnemyStates> CurrentState;
+
 public:
 	FEntity_Stats GetEnemyStats()const { return  EnemyStats; }
 	inline void DamageEnemy(const float Damage) { EnemyStats.Health -= Damage; }
 
 	ABase_Player* GetPlayer()const { return PlayerRef; }
+
+	TEnumAsByte<EEnemyStates> GetState() { return CurrentState; }
+
+	void SetHealth(float h) { EnemyStats.Health = h;  }
+
 };

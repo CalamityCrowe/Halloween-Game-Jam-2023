@@ -19,17 +19,11 @@ void ABase_Enemy_Controller::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	time += DeltaTime;
-	GEngine->AddOnScreenDebugMessage(12, 2, FColor::Yellow, TEXT("Possessddddddddddddddddddded"));
+	//GEngine->AddOnScreenDebugMessage(12, 2, FColor::Yellow, TEXT("Possessddddddddddddddddddded"));
 
 
-	if (time >= 2)
-	{
-		if (ABase_Enemy* en = Cast<ABase_Enemy>(GetPawn()))
-		{
-			MoveActor(FVector(en->GetPlayer()->GetActorLocation()));
-			time = 0; 
-		}
-	}
+
+
 
 }
 
@@ -42,21 +36,22 @@ void ABase_Enemy_Controller::OnPossess(APawn* InPawn)
 	}
 }
 
-void ABase_Enemy_Controller::MoveActor(FVector newDir)
+void ABase_Enemy_Controller::MoveActor(AActor* TargetActor)
 {
 
-	NavArea = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 
 	if (APawn* ControlledPawn = GetPawn())
 	{
+		const ANavigationData* NavData = NavSys->GetDefaultNavDataInstance(FNavigationSystem::DontCreate);
+
 		if (ABase_Enemy* CurrentEnemy = Cast<ABase_Enemy>(ControlledPawn))
 		{
-			FNavLocation newLocation;
-			if (NavArea->GetRandomPointInNavigableRadius(newDir, 50, newLocation))
-			{
-				MoveToLocation(newLocation.Location);
-				GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Blue, TEXT("AAAAAAAAAAAAA"));
-			}
+
+			MoveToActor(TargetActor, 0); 
+
+			//GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Blue, TEXT("AAAAAAAAAAAAA"));
+
 		}
 
 	}

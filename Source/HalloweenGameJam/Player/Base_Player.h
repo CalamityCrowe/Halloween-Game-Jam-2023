@@ -39,6 +39,8 @@ private:
 	TObjectPtr<USpringArmComponent> CameraArm;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCameraComponent> Camera;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<USceneComponent> FirePoint; 
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -49,11 +51,17 @@ private:
 	TObjectPtr<class UInputAction> MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> FireAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
 	void Move(const FInputActionValue&);
 	void Turn(const FInputActionValue&);
-	void FireWeapon(const FInputActionValue&);
+	inline void TriggerHeld() { isHeld = true;  };
+	inline void TriggerReleased() { isHeld = false;  }
+
+	void FireWeapon(float);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	FEntity_Stats PlayerStats;
@@ -66,7 +74,10 @@ public:
 	FEntity_Stats GetPlayerStats()const { return PlayerStats; }
 
 private:
-	FHitResult* LineTraceMethod(const FVector& StartLocation, const FVector& EndLocation);
+	bool LineTraceMethod(FHitResult&);
 
-
+	bool isHeld; 
+	
+	float triggerInterval = 0.4f; 
+	float timer;
 };
