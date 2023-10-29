@@ -23,18 +23,18 @@ ABase_Enemy::ABase_Enemy()
 
 	GetCapsuleComponent()->BodyInstance.bLockXRotation = true;
 	GetCapsuleComponent()->BodyInstance.bLockYRotation = true;
-	GetCapsuleComponent()->SetCollisionProfileName("BlockAll"); 
+	GetCapsuleComponent()->SetCollisionProfileName("BlockAll");
 
 
-	EnemyStats.bIsDead = false; 
+	EnemyStats.bIsDead = false;
 
-	CurrentState = EEnemyStates::Idle; 
-	
-		if (UPrimitiveComponent* PrimComponent = Cast<UPrimitiveComponent>(RootComponent))
-		{
-			//PrimComponent->SetSimulatePhysics(true);  // sets the physics of the component
+	CurrentState = EEnemyStates::Idle;
 
-		}
+	if (UPrimitiveComponent* PrimComponent = Cast<UPrimitiveComponent>(RootComponent))
+	{
+		//PrimComponent->SetSimulatePhysics(true);  // sets the physics of the component
+
+	}
 	SetRole(ROLE_Authority);
 
 }
@@ -73,12 +73,12 @@ void ABase_Enemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	UpdateCollisionSize();
 
-	HandleEnemyStates(); 
+	HandleEnemyStates();
 	HandleEnemyDeath();
 
 	if (ABase_Enemy_Controller* enemyCont = Cast<ABase_Enemy_Controller>(GetController()))
 	{
-		if (EnemyStats.bIsDead ==false) 
+		if (EnemyStats.bIsDead == false)
 		{
 			enemyCont->MoveActor(PlayerRef);
 		}
@@ -99,7 +99,7 @@ void ABase_Enemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ABase_Enemy::HandleEnemyDeath()
 {
-	if (EnemyStats.bIsDead == true && GetMesh()->IsPlaying() == false)
+	if (EnemyStats.bIsDead && animFinished)
 	{
 		Destroy();
 	}

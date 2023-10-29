@@ -57,7 +57,6 @@ void ASpawnManager::BeginPlay()
 	Cast<AEnemySpawnPoint>(Spawner4->GetChildActor())->SetEnemyType(SpawnerTypes[3]);
 	Cast<AEnemySpawnPoint>(Spawner5->GetChildActor())->SetEnemyType(SpawnerTypes[4]);
 
-	SpawnSignal(); 
 
 }
 

@@ -95,6 +95,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TEnumAsByte<EEnemyStates> CurrentState;
 
+	bool animFinished;
+
 public:
 	FEntity_Stats GetEnemyStats()const { return  EnemyStats; }
 	inline void DamageEnemy(const float Damage) { EnemyStats.Health -= Damage; }
@@ -103,6 +105,7 @@ public:
 
 	TEnumAsByte<EEnemyStates> GetState() { return CurrentState; }
 
-	void SetHealth(float h) { EnemyStats.Health = h;  }
-
+	void SetHealth(float h) { EnemyStats.Health = h; }
+	UFUNCTION(BlueprintCallable)
+	void AnimationFinished() { animFinished = true; }
 };
