@@ -30,7 +30,7 @@ ABase_Player::ABase_Player()
 
 	Camera->SetupAttachment(CameraArm);
 
-	isHeld = false;
+	bisHeld = false;
 }
 
 // Called when the game starts or when spawned
@@ -44,7 +44,7 @@ void ABase_Player::BeginPlay()
 void ABase_Player::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (isHeld)
+	if (bisHeld)
 	{
 		FireWeapon(DeltaTime);
 	}
@@ -71,10 +71,9 @@ void ABase_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ABase_Player::Turn(const FInputActionValue& Value)
 {
-	FVector2D LookVec = Value.Get<FVector2D>();
+	const FVector2D LookVec = Value.Get<FVector2D>();
 	if (Controller)
 	{
-
 		AddControllerYawInput(LookVec.X);
 		AddControllerPitchInput(LookVec.Y);
 	}
@@ -95,6 +94,7 @@ void ABase_Player::FireWeapon(float DeltaTime)
 				ABase_Enemy* enemy = Cast<ABase_Enemy>(hitResult.GetActor());
 				enemy->DamageEnemy(10.f);
 				GEngine->AddOnScreenDebugMessage(110, 2, FColor::Yellow, TEXT("Hit"));
+
 			}
 		}
 
@@ -128,7 +128,6 @@ void ABase_Player::Move(const FInputActionValue& Value)
 	{
 		AddMovementInput(GetActorForwardVector(), moveVal.Y);
 		AddMovementInput(GetActorRightVector(), moveVal.X);
-
 	}
 }
 

@@ -24,7 +24,7 @@ ADynamicMusicActor::ADynamicMusicActor()
 	CurrentMusicState = EMusicState::None;
 	CurrentCombatPerformance = ECombatPerformance::None;
 
-	IdleAudioPlayer->SetVolumeMultiplier(BaseVolume);
+	//IdleAudioPlayer->SetVolumeMultiplier(BaseVolume);
 
 }
 
@@ -34,8 +34,8 @@ void ADynamicMusicActor::BeginPlay()
 	Super::BeginPlay();
 
 	BaseAudioPlayer->SetSound(BaseTrack);
-
-
+	BaseAudioPlayer->SetBoolParameter("Loop", true);
+	BaseAudioPlayer->SetIntParameter(FName(TEXT("Combat Switch")), CurrentMusicState.GetIntValue());
 }
 
 void ADynamicMusicActor::HandlePerformanceState()
@@ -62,7 +62,7 @@ void ADynamicMusicActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	switch (CurrentMusicState)
+	switch (CurrentMusicState.GetValue())
 	{
 	case EMusicState::Fighting:
 		if (BaseAudioPlayer->IsPlaying() == false)
@@ -97,15 +97,16 @@ void ADynamicMusicActor::IncreaseStyleMeter()
 {
 	if (CurrentCombatPerformance != ECombatPerformance::Smokin_Sexy_Style)
 	{
-		CurrentCombatPerformance = dynamic_cast<ECombatPerformance>(dynamic_cast<int>(CurrentCombatPerformance) + 1);
+		CurrentCombatPerformance = static_cast<ECombatPerformance>(CurrentCombatPerformance.GetIntValue() + 1);
 	}
+
 }
 
 void ADynamicMusicActor::DecreaseStyleMeter()
 {
 	if (CurrentCombatPerformance != ECombatPerformance::None)
 	{
-		CurrentCombatPerformance = dynamic_cast<ECombatPerformance>(dynamic_cast<int>(CurrentCombatPerformance) - 1);
+		CurrentCombatPerformance = static_cast<ECombatPerformance>(CurrentCombatPerformance.GetIntValue() - 1);
 	}
 }
 

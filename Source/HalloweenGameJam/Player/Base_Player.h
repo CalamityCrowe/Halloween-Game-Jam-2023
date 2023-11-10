@@ -8,6 +8,8 @@
 #include "HalloweenGameJam/Entity_Stats.h"
 #include "Base_Player.generated.h"
 
+class UInputAction;
+class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -40,26 +42,29 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCameraComponent> Camera;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<USceneComponent> FirePoint; 
+	TObjectPtr<USceneComponent> FirePoint;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<USphereComponent> RangeTrigger;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> JumpAction;
+	TObjectPtr<UInputAction> JumpAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> MoveAction;
+	TObjectPtr<UInputAction> MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> FireAction;
+	TObjectPtr<UInputAction> FireAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* LookAction;
+	TObjectPtr<UInputAction> LookAction;
 
 	void Move(const FInputActionValue&);
 	void Turn(const FInputActionValue&);
-	inline void TriggerHeld() { isHeld = true;  };
-	inline void TriggerReleased() { isHeld = false;  }
+	void TriggerHeld() { bisHeld = true; };
+	void TriggerReleased() { bisHeld = false; }
 
 	void FireWeapon(float);
 
@@ -76,8 +81,8 @@ public:
 private:
 	bool LineTraceMethod(FHitResult&);
 
-	bool isHeld; 
-	
-	float triggerInterval = 0.4f; 
+	bool bisHeld;
+
+	float triggerInterval = 0.4f;
 	float timer;
 };

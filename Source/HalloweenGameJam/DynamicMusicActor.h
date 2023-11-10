@@ -73,7 +73,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<USoundBase> BaseTrack;
-
+	
 
 
 public:

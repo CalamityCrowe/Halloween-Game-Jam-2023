@@ -19,10 +19,6 @@ void ABase_Enemy_Controller::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	time += DeltaTime;
-	//GEngine->AddOnScreenDebugMessage(12, 2, FColor::Yellow, TEXT("Possessddddddddddddddddddded"));
-
-
-
 
 
 }
