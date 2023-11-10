@@ -12,6 +12,7 @@ ADynamicMusicActor::ADynamicMusicActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 
+
 	BaseVolume = 0.5f;
 	LowerVolume = 0.25f;
 	HigherVolume = 1;
@@ -24,7 +25,6 @@ ADynamicMusicActor::ADynamicMusicActor()
 	CurrentMusicState = EMusicState::None;
 	CurrentCombatPerformance = ECombatPerformance::None;
 
-	IdleAudioPlayer->SetVolumeMultiplier(BaseVolume);
 
 }
 
@@ -33,26 +33,19 @@ void ADynamicMusicActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BaseAudioPlayer->SetSound(BaseTrack);
-
-
+	BaseAudioTrack->SetSound(BaseTrack);
 }
 
 void ADynamicMusicActor::HandlePerformanceState()
 {
-	if (CurrentCombatPerformance == ECombatPerformance::None)
-	{
-		StyleMeter = 0.9f;
-	}
-
 	if (StyleMeter >= IncreaseCap)
 	{
-		IncreaseStyleMeter();
+
 		StyleMeter = DefaultValue;
 	}
 	if (StyleMeter <= LowerCap)
 	{
-		DecreaseStyleMeter();
+
 		StyleMeter = DefaultValue;
 	}
 }
@@ -65,25 +58,7 @@ void ADynamicMusicActor::Tick(float DeltaTime)
 	switch (CurrentMusicState)
 	{
 	case EMusicState::Fighting:
-		if (BaseAudioPlayer->IsPlaying() == false)
-		{
-			BaseAudioPlayer->Play();
-		}
-
 		HandlePerformanceState();
-
-		break;
-
-	case EMusicState::Idle:
-		if (IdleAudioPlayer->IsPlaying() == false)
-		{
-			IdleAudioPlayer->Play();
-		}
-		break;
-
-	case EMusicState::CombatInitiated:
-
-
 		break;
 
 	default:
@@ -91,23 +66,6 @@ void ADynamicMusicActor::Tick(float DeltaTime)
 		break;
 
 	}
+
 }
-
-void ADynamicMusicActor::IncreaseStyleMeter()
-{
-	if (CurrentCombatPerformance != ECombatPerformance::Smokin_Sexy_Style)
-	{
-		CurrentCombatPerformance = dynamic_cast<ECombatPerformance>(dynamic_cast<int>(CurrentCombatPerformance) + 1);
-	}
-}
-
-void ADynamicMusicActor::DecreaseStyleMeter()
-{
-	if (CurrentCombatPerformance != ECombatPerformance::None)
-	{
-		CurrentCombatPerformance = dynamic_cast<ECombatPerformance>(dynamic_cast<int>(CurrentCombatPerformance) - 1);
-	}
-}
-
-
 

@@ -18,7 +18,7 @@ enum class EMusicState : uint8
 
 UENUM()
 
-enum class ECombatPerformance : uint8
+enum class ECombatPerformance: uint8
 {
 	None,
 	Dope,
@@ -34,8 +34,8 @@ UCLASS()
 class HALLOWEENGAMEJAM_API ADynamicMusicActor : public AActor
 {
 	GENERATED_BODY()
-
-public:
+	
+public:	
 	// Sets default values for this actor's properties
 	ADynamicMusicActor();
 
@@ -46,8 +46,7 @@ protected:
 	void HandlePerformanceState();
 
 
-
-public:
+public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 private:
@@ -67,20 +66,14 @@ private:
 	TEnumAsByte<ECombatPerformance> CurrentCombatPerformance;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAudioComponent> BaseAudioPlayer;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAudioComponent> IdleAudioPlayer;
+	TObjectPtr<UAudioComponent> BaseAudioTrack;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<USoundBase> BaseTrack;
-
-
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,meta = (AllowPrivateAccess = true))
+	TObjectPtr<USoundBase> BaseTrack; 
 
 public:
-	EMusicState GetMusicState() const { return CurrentMusicState; }
-	void SetMusicState(EMusicState newState) { CurrentMusicState = newState; }
+	EMusicState GetMusicState() const { return CurrentMusicState;  }
+	void SetMusicState(EMusicState newState)  { CurrentMusicState = newState; }
 
-private:
-	void IncreaseStyleMeter();
-	void DecreaseStyleMeter();
+
 };
