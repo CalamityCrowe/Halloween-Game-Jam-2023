@@ -6,11 +6,9 @@
 
 
 // Sets default values
-ADynamicMusicActor::ADynamicMusicActor()
+UDynamicMusicActor::UDynamicMusicActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 
 	BaseVolume = 0.5f;
 	LowerVolume = 0.25f;
@@ -29,7 +27,7 @@ ADynamicMusicActor::ADynamicMusicActor()
 }
 
 // Called when the game starts or when spawned
-void ADynamicMusicActor::BeginPlay()
+void UDynamicMusicActor::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -40,7 +38,7 @@ void ADynamicMusicActor::BeginPlay()
 	//BaseAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear); 
 }
 
-void ADynamicMusicActor::HandlePerformanceState()
+void UDynamicMusicActor::HandlePerformanceState()
 {
 	if (CurrentCombatPerformance == ECombatPerformance::None)
 	{
@@ -60,9 +58,10 @@ void ADynamicMusicActor::HandlePerformanceState()
 }
 
 // Called every frame
-void ADynamicMusicActor::Tick(float DeltaTime)
+void UDynamicMusicActor::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::Tick(DeltaTime);
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	switch (CurrentMusicState.GetValue())
 	{
@@ -91,7 +90,7 @@ void ADynamicMusicActor::Tick(float DeltaTime)
 	}
 }
 
-void ADynamicMusicActor::IncreaseCombatPerformance()
+void UDynamicMusicActor::IncreaseCombatPerformance()
 {
 	ECombatPerformance PreviousState = CurrentCombatPerformance.GetValue();
 	if (CurrentCombatPerformance != ECombatPerformance::Smokin_Sexy_Style)
@@ -134,7 +133,7 @@ void ADynamicMusicActor::IncreaseCombatPerformance()
 
 }
 
-void ADynamicMusicActor::DecreaseCombatPerformance()
+void UDynamicMusicActor::DecreaseCombatPerformance()
 {
 	if (CurrentCombatPerformance != ECombatPerformance::None)
 	{

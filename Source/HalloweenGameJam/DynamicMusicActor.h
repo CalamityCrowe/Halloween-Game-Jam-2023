@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Components/SceneComponent.h"
 #include "DynamicMusicActor.generated.h"
 
 UENUM()
@@ -30,14 +30,14 @@ enum class ECombatPerformance : uint8
 	Smokin_Sexy_Style
 };
 
-UCLASS()
-class HALLOWEENGAMEJAM_API ADynamicMusicActor : public AActor
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class HALLOWEENGAMEJAM_API UDynamicMusicActor : public USceneComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ADynamicMusicActor();
+	UDynamicMusicActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -49,7 +49,7 @@ protected:
 
 public:
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void TickComponent(float DeltaTime,ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
 
 	float StyleMeter;

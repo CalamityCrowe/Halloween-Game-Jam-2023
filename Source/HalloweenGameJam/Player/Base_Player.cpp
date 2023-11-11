@@ -7,9 +7,11 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HalloweenGameJam/DynamicMusicActor.h"
 #include "HalloweenGameJam/Enemy/Base_Enemy.h"
 #include "HalloweenGameJam/Enemy/Lich.h"
 #include "HalloweenGameJam/Enemy/Ghoul.h"
+#include "HalloweenGameJam/DynamicMusicActor.h"
 
 
 // Sets default values
@@ -29,6 +31,9 @@ ABase_Player::ABase_Player()
 	FirePoint->SetupAttachment(GetCapsuleComponent());
 
 	Camera->SetupAttachment(CameraArm);
+
+	MusicActor = CreateOptionalDefaultSubobject<UDynamicMusicActor>(TEXT("MusicActor"));
+	MusicActor->SetupAttachment(GetCapsuleComponent()); 
 
 	bisHeld = false;
 }

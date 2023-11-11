@@ -12,6 +12,7 @@ class UInputAction;
 class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UDynamicMusicActor; 
 
 UCLASS()
 class HALLOWEENGAMEJAM_API ABase_Player : public ACharacter
@@ -46,6 +47,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<USphereComponent> RangeTrigger;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UDynamicMusicActor> MusicActor; 
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
