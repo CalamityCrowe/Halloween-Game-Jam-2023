@@ -33,9 +33,11 @@ void ADynamicMusicActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	BaseAudioPlayer->SetSound(BaseTrack);
-	BaseAudioPlayer->SetBoolParameter("Loop", true);
-	BaseAudioPlayer->SetIntParameter(FName(TEXT("Combat Switch")), CurrentMusicState.GetIntValue());
+	IdleAudioPlayer->SetSound(BaseTrack);
+	IdleAudioPlayer->SetBoolParameter("Loop", true);
+	IdleAudioPlayer->SetIntParameter(FName(TEXT("Combat Switch")), CurrentMusicState.GetIntValue());
+
+	//BaseAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear); 
 }
 
 void ADynamicMusicActor::HandlePerformanceState()
@@ -47,12 +49,12 @@ void ADynamicMusicActor::HandlePerformanceState()
 
 	if (StyleMeter >= IncreaseCap)
 	{
-		IncreaseStyleMeter();
+		IncreaseCombatPerformance();
 		StyleMeter = DefaultValue;
 	}
 	if (StyleMeter <= LowerCap)
 	{
-		DecreaseStyleMeter();
+		DecreaseCombatPerformance();
 		StyleMeter = DefaultValue;
 	}
 }
@@ -65,10 +67,6 @@ void ADynamicMusicActor::Tick(float DeltaTime)
 	switch (CurrentMusicState.GetValue())
 	{
 	case EMusicState::Fighting:
-		if (BaseAudioPlayer->IsPlaying() == false)
-		{
-			BaseAudioPlayer->Play();
-		}
 
 		HandlePerformanceState();
 
@@ -93,20 +91,88 @@ void ADynamicMusicActor::Tick(float DeltaTime)
 	}
 }
 
-void ADynamicMusicActor::IncreaseStyleMeter()
+void ADynamicMusicActor::IncreaseCombatPerformance()
 {
+	ECombatPerformance PreviousState = CurrentCombatPerformance.GetValue();
 	if (CurrentCombatPerformance != ECombatPerformance::Smokin_Sexy_Style)
 	{
 		CurrentCombatPerformance = static_cast<ECombatPerformance>(CurrentCombatPerformance.GetIntValue() + 1);
 	}
+	switch (CurrentCombatPerformance.GetValue())
+	{
+	case ECombatPerformance::Dope:
+		IdleAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatDopeAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		break;
+	case ECombatPerformance::Crazy:
+		CombatDopeAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatCrazyAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+
+		break;
+	case ECombatPerformance::Badass:
+		CombatCrazyAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatBadassAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		break;
+	case ECombatPerformance::Apocalyptic:
+		CombatBadassAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatApocalypticAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		break;
+
+	case ECombatPerformance::Savage:
+	case ECombatPerformance::Sick_Skills:
+	case ECombatPerformance::Smokin_Sexy_Style:
+		if (PreviousState == ECombatPerformance::Apocalyptic)
+		{
+			CombatApocalypticAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+			CombatSexyAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		}
+		break;
+
+	default:
+		break;
+	}
 
 }
 
-void ADynamicMusicActor::DecreaseStyleMeter()
+void ADynamicMusicActor::DecreaseCombatPerformance()
 {
 	if (CurrentCombatPerformance != ECombatPerformance::None)
 	{
 		CurrentCombatPerformance = static_cast<ECombatPerformance>(CurrentCombatPerformance.GetIntValue() - 1);
+	}
+	switch (CurrentCombatPerformance.GetValue())
+	{
+	case ECombatPerformance::None:
+		CombatDopeAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		IdleAudioPlayer->FadeIn(3, BaseVolume, 0, EAudioFaderCurve::Linear);
+		break;
+
+	case ECombatPerformance::Dope:
+		CombatCrazyAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatDopeAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		break;
+
+	case ECombatPerformance::Crazy:
+		CombatBadassAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatCrazyAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		break;
+	case ECombatPerformance::Badass:
+		CombatApocalypticAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatBadassAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		break;
+	case ECombatPerformance::Apocalyptic:
+		CombatSexyAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatApocalypticAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		break;
+
+	case ECombatPerformance::Savage:
+	case ECombatPerformance::Sick_Skills:
+	case ECombatPerformance::Smokin_Sexy_Style:
+
+		break;
+
+	default:
+		break;
 	}
 }
 

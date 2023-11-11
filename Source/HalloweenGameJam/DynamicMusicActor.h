@@ -67,20 +67,32 @@ private:
 	TEnumAsByte<ECombatPerformance> CurrentCombatPerformance;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAudioComponent> BaseAudioPlayer;
+	TObjectPtr<UAudioComponent> CombatDopeAudioPlayer;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAudioComponent> CombatCrazyAudioPlayer;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAudioComponent> CombatBadassAudioPlayer;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAudioComponent> CombatApocalypticAudioPlayer;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UAudioComponent> CombatSexyAudioPlayer;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAudioComponent> IdleAudioPlayer;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<USoundBase> BaseTrack;
-	
+
 
 
 public:
 	EMusicState GetMusicState() const { return CurrentMusicState; }
-	void SetMusicState(EMusicState newState) { CurrentMusicState = newState; }
+	void SetMusicState(EMusicState NewState) { CurrentMusicState = NewState; }
+
+	void IncreasePerformanceMeter(const float Increase) { StyleMeter += Increase; }
 
 private:
-	void IncreaseStyleMeter();
-	void DecreaseStyleMeter();
+	void IncreaseCombatPerformance();
+	void DecreaseCombatPerformance();
+
+
 };
