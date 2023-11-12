@@ -89,4 +89,12 @@ private:
 
 	float triggerInterval = 0.4f;
 	float timer;
+
+	UFUNCTION()
+	void OverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void EndOverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	int enemiesInRange; 
+
 };

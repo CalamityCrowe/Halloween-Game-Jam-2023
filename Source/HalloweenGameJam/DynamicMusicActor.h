@@ -12,7 +12,6 @@ enum class EMusicState : uint8
 {
 	None,
 	Idle,
-	CombatInitiated,
 	Fighting
 };
 
@@ -66,21 +65,19 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TEnumAsByte<ECombatPerformance> CurrentCombatPerformance;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAudioComponent> CombatDopeAudioPlayer;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAudioComponent> CombatCrazyAudioPlayer;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAudioComponent> CombatBadassAudioPlayer;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAudioComponent> CombatApocalypticAudioPlayer;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UAudioComponent> CombatSexyAudioPlayer;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+
+	TArray<UAudioComponent*> CombatAudioPlayers; 
+
+
 	TObjectPtr<UAudioComponent> IdleAudioPlayer;
+	TObjectPtr<UAudioComponent> CombatInitiatedAudioPlayer;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<USoundBase> BaseTrack;
+	TObjectPtr<USoundBase> IdleTrack;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<USoundBase> CombatInitiatedTrack;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TArray<USoundBase*> CombatTracks;
 
 
 
@@ -90,6 +87,9 @@ public:
 
 	void IncreasePerformanceMeter(const float Increase) { StyleMeter += Increase; }
 
+
+	void TransitionToIdle();
+	void TransitionToCombatInitiated();
 private:
 	void IncreaseCombatPerformance();
 	void DecreaseCombatPerformance();

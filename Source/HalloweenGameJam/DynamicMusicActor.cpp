@@ -22,6 +22,13 @@ UDynamicMusicActor::UDynamicMusicActor()
 	CurrentMusicState = EMusicState::None;
 	CurrentCombatPerformance = ECombatPerformance::None;
 
+
+	for (int i = 0; i < 5; i++)
+	{
+		CombatAudioPlayers.Add(TObjectPtr<UAudioComponent>());
+		CombatTracks.Add(TObjectPtr<USoundBase>());
+	}
+
 	//IdleAudioPlayer->SetVolumeMultiplier(BaseVolume);
 
 }
@@ -31,9 +38,18 @@ void UDynamicMusicActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	IdleAudioPlayer->SetSound(BaseTrack);
+	IdleAudioPlayer->SetSound(IdleTrack);
 	IdleAudioPlayer->SetBoolParameter("Loop", true);
 	IdleAudioPlayer->SetIntParameter(FName(TEXT("Combat Switch")), CurrentMusicState.GetIntValue());
+
+	for (int i = 0; i < CombatAudioPlayers.Num(); i++)
+	{
+		if (CombatTracks[i] != nullptr)
+		{
+			CombatAudioPlayers[i]->SetSound(CombatTracks[i]); //sets the combat racks to get used in the game
+		}
+
+	}
 
 	//BaseAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear); 
 }
@@ -70,25 +86,37 @@ void UDynamicMusicActor::TickComponent(float DeltaTime, ELevelTick TickType,
 		HandlePerformanceState();
 
 		break;
-
-	case EMusicState::Idle:
-		if (IdleAudioPlayer->IsPlaying() == false)
-		{
-			IdleAudioPlayer->Play();
-		}
-		break;
-
-	case EMusicState::CombatInitiated:
-
-
-		break;
-
 	default:
-
 		break;
 
 	}
 }
+
+void UDynamicMusicActor::TransitionToIdle()
+{
+	for (int i = 0; i < CombatAudioPlayers.Num(); i++)
+	{
+		if (CombatAudioPlayers[i]->IsPlaying())
+		{
+			CombatAudioPlayers[i]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		}
+	}
+	if (CombatInitiatedAudioPlayer->IsPlaying())
+	{
+		CombatInitiatedAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+	}
+	IdleAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+	CurrentMusicState = EMusicState::Idle;
+}
+
+void UDynamicMusicActor::TransitionToCombatInitiated()
+{
+	IdleAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+	CombatInitiatedAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+	CurrentMusicState = EMusicState::Fighting;
+}
+
+
 
 void UDynamicMusicActor::IncreaseCombatPerformance()
 {
@@ -100,21 +128,21 @@ void UDynamicMusicActor::IncreaseCombatPerformance()
 	switch (CurrentCombatPerformance.GetValue())
 	{
 	case ECombatPerformance::Dope:
-		IdleAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		CombatDopeAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		CombatInitiatedAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[0]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 		break;
 	case ECombatPerformance::Crazy:
-		CombatDopeAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		CombatCrazyAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[0]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[1]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 
 		break;
 	case ECombatPerformance::Badass:
-		CombatCrazyAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		CombatBadassAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[1]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[2]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 		break;
 	case ECombatPerformance::Apocalyptic:
-		CombatBadassAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		CombatApocalypticAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[2]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[3]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 		break;
 
 	case ECombatPerformance::Savage:
@@ -122,8 +150,8 @@ void UDynamicMusicActor::IncreaseCombatPerformance()
 	case ECombatPerformance::Smokin_Sexy_Style:
 		if (PreviousState == ECombatPerformance::Apocalyptic)
 		{
-			CombatApocalypticAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-			CombatSexyAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+			CombatAudioPlayers[3]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+			CombatAudioPlayers[4]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 		}
 		break;
 
@@ -142,26 +170,28 @@ void UDynamicMusicActor::DecreaseCombatPerformance()
 	switch (CurrentCombatPerformance.GetValue())
 	{
 	case ECombatPerformance::None:
-		CombatDopeAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		IdleAudioPlayer->FadeIn(3, BaseVolume, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[0]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatInitiatedAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 		break;
 
 	case ECombatPerformance::Dope:
-		CombatCrazyAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		CombatDopeAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[1]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[0]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 		break;
 
 	case ECombatPerformance::Crazy:
-		CombatBadassAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		CombatCrazyAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[2]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[1]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+
 		break;
 	case ECombatPerformance::Badass:
-		CombatApocalypticAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		CombatBadassAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[3]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[2]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 		break;
 	case ECombatPerformance::Apocalyptic:
-		CombatSexyAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-		CombatApocalypticAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+
+		CombatAudioPlayers[4]->FadeOut(3, 0, EAudioFaderCurve::Linear);
+		CombatAudioPlayers[3]->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 		break;
 
 	case ECombatPerformance::Savage:

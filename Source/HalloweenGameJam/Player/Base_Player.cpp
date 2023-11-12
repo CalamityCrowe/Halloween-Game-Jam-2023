@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/SphereComponent.h"
 #include "HalloweenGameJam/DynamicMusicActor.h"
 #include "HalloweenGameJam/Enemy/Base_Enemy.h"
 #include "HalloweenGameJam/Enemy/Lich.h"
@@ -33,9 +34,18 @@ ABase_Player::ABase_Player()
 	Camera->SetupAttachment(CameraArm);
 
 	MusicActor = CreateOptionalDefaultSubobject<UDynamicMusicActor>(TEXT("MusicActor"));
-	MusicActor->SetupAttachment(GetCapsuleComponent()); 
+	MusicActor->SetupAttachment(GetCapsuleComponent());
+
+	RangeTrigger = CreateOptionalDefaultSubobject<USphereComponent>(TEXT("Range Trigger"));
+	RangeTrigger->SetSphereRadius(1200, true);
+	RangeTrigger->SetupAttachment(GetCapsuleComponent());
+
+	RangeTrigger->OnComponentBeginOverlap.AddDynamic(this, &ABase_Player::OverlapWithMusicTrigger);
+	RangeTrigger->OnComponentEndOverlap.AddDynamic(this, &ABase_Player::EndOverlapWithMusicTrigger);
 
 	bisHeld = false;
+
+	enemiesInRange = 0;
 }
 
 // Called when the game starts or when spawned
@@ -125,6 +135,35 @@ bool ABase_Player::LineTraceMethod(FHitResult& OutHit)
 	return GetWorld()->LineTraceSingleByChannel(OutHit, start, end, ECC_Visibility, parameters);
 
 }
+
+void ABase_Player::OverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ABase_Enemy* OverlappedEnemy = Cast<ABase_Enemy>(OtherActor))
+	{
+		enemiesInRange++;
+		if (enemiesInRange == 1)
+		{
+
+		}
+	}
+}
+
+void ABase_Player::EndOverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (ABase_Enemy* OverlappedEnemy = Cast<ABase_Enemy>(OtherActor))
+	{
+		enemiesInRange--;
+		if (enemiesInRange <= 0)
+		{
+
+			enemiesInRange = 0;
+		}
+
+	}
+}
+
 
 void ABase_Player::Move(const FInputActionValue& Value)
 {
