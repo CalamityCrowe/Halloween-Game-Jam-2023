@@ -2,6 +2,9 @@
 
 
 #include "DynamicMusicActor.h"
+
+#include <string>
+
 #include "Components/AudioComponent.h"
 
 
@@ -23,11 +26,26 @@ UDynamicMusicActor::UDynamicMusicActor()
 	CurrentCombatPerformance = ECombatPerformance::None;
 
 
+	IdleAudioPlayer = CreateOptionalDefaultSubobject<UAudioComponent>(TEXT("IdlePlayer"));
+	IdleAudioPlayer->SetupAttachment(this);
+
+	CombatInitiatedAudioPlayer = CreateOptionalDefaultSubobject<UAudioComponent>(TEXT("InitiatedAudioPlayer"));
+	CombatInitiatedAudioPlayer->SetupAttachment(this); 
+
 	for (int i = 0; i < 5; i++)
 	{
 		CombatAudioPlayers.Add(TObjectPtr<UAudioComponent>());
+
 		CombatTracks.Add(TObjectPtr<USoundBase>());
 	}
+
+	CombatAudioPlayers[0] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Dope Player");
+	CombatAudioPlayers[1] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Crazy Player");
+	CombatAudioPlayers[2] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Badass Player");
+	CombatAudioPlayers[3] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Apocalyptic Player");
+	CombatAudioPlayers[4] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Sexy Player");
+
+	for (int i = 0; i < 5; i++) { CombatAudioPlayers[i]->SetupAttachment(this); }
 
 	//IdleAudioPlayer->SetVolumeMultiplier(BaseVolume);
 
@@ -39,14 +57,14 @@ void UDynamicMusicActor::BeginPlay()
 	Super::BeginPlay();
 
 	IdleAudioPlayer->SetSound(IdleTrack);
-	IdleAudioPlayer->SetBoolParameter("Loop", true);
-	IdleAudioPlayer->SetIntParameter(FName(TEXT("Combat Switch")), CurrentMusicState.GetIntValue());
+	IdleAudioPlayer->SetBoolParameter("Looping", true);
 
 	for (int i = 0; i < CombatAudioPlayers.Num(); i++)
 	{
 		if (CombatTracks[i] != nullptr)
 		{
 			CombatAudioPlayers[i]->SetSound(CombatTracks[i]); //sets the combat racks to get used in the game
+			CombatAudioPlayers[i]->SetBoolParameter("Looping", true);
 		}
 
 	}

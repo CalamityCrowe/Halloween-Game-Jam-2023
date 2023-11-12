@@ -109,7 +109,7 @@ void ABase_Player::FireWeapon(float DeltaTime)
 				ABase_Enemy* enemy = Cast<ABase_Enemy>(hitResult.GetActor());
 				enemy->DamageEnemy(10.f);
 				GEngine->AddOnScreenDebugMessage(110, 2, FColor::Yellow, TEXT("Hit"));
-
+				MusicActor->IncreasePerformanceMeter(0.1f);
 			}
 		}
 
@@ -144,7 +144,7 @@ void ABase_Player::OverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, 
 		enemiesInRange++;
 		if (enemiesInRange == 1)
 		{
-
+			MusicActor->TransitionToCombatInitiated();
 		}
 	}
 }
@@ -157,7 +157,7 @@ void ABase_Player::EndOverlapWithMusicTrigger(UPrimitiveComponent* OverlappedCom
 		enemiesInRange--;
 		if (enemiesInRange <= 0)
 		{
-
+			MusicActor->TransitionToIdle(); 
 			enemiesInRange = 0;
 		}
 
