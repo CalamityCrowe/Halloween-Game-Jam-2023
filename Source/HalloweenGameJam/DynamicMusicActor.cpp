@@ -108,7 +108,7 @@ void UDynamicMusicActor::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (PerformanceDecreaseTimer >= 1.5f && CurrentCombatPerformance != ECombatPerformance::None)
 	{
-		StyleMeter -= DeltaTime / 2;
+		StyleMeter -= DeltaTime / 4;
 	}
 
 	switch (CurrentMusicState.GetValue())
