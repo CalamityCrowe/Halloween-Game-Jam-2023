@@ -12,6 +12,7 @@
 UDynamicMusicActor::UDynamicMusicActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryComponentTick.bCanEverTick = true;
 
 	BaseVolume = 0.5f;
 	LowerVolume = 0.25f;
@@ -69,6 +70,8 @@ void UDynamicMusicActor::BeginPlay()
 
 	}
 
+	CombatInitiatedAudioPlayer->SetSound(CombatInitiatedTrack); 
+
 	IdleAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 	SetMusicState(EMusicState::Idle);
 
@@ -77,10 +80,6 @@ void UDynamicMusicActor::BeginPlay()
 
 void UDynamicMusicActor::HandlePerformanceState()
 {
-	if (CurrentCombatPerformance == ECombatPerformance::None)
-	{
-		StyleMeter = 0.9f;
-	}
 
 	if (StyleMeter >= IncreaseCap)
 	{
@@ -91,6 +90,11 @@ void UDynamicMusicActor::HandlePerformanceState()
 	{
 		DecreaseCombatPerformance();
 		StyleMeter = DefaultValue;
+	}
+
+	if (CurrentCombatPerformance == ECombatPerformance::None)
+	{
+		StyleMeter = 0.9f;
 	}
 }
 
@@ -140,7 +144,7 @@ void UDynamicMusicActor::TransitionToIdle()
 void UDynamicMusicActor::TransitionToCombatInitiated()
 {
 	IdleAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
-	CombatInitiatedAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+	CombatInitiatedAudioPlayer->FadeIn(3, 100, 0, EAudioFaderCurve::Linear);
 	CurrentMusicState = EMusicState::Fighting;
 }
 

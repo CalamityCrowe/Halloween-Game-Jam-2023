@@ -35,6 +35,7 @@ ABase_Player::ABase_Player()
 
 	MusicActor = CreateOptionalDefaultSubobject<UDynamicMusicActor>(TEXT("MusicActor"));
 	MusicActor->SetupAttachment(GetCapsuleComponent());
+	MusicActor->SetComponentTickEnabled(true);
 
 	RangeTrigger = CreateOptionalDefaultSubobject<USphereComponent>(TEXT("Range Trigger"));
 	RangeTrigger->SetSphereRadius(1200, true);
@@ -109,7 +110,7 @@ void ABase_Player::FireWeapon(float DeltaTime)
 				ABase_Enemy* enemy = Cast<ABase_Enemy>(hitResult.GetActor());
 				enemy->DamageEnemy(10.f);
 				GEngine->AddOnScreenDebugMessage(110, 2, FColor::Yellow, TEXT("Hit"));
-				MusicActor->IncreasePerformanceMeter(0.1f);
+				MusicActor->IncreasePerformanceMeter(0.03f);
 			}
 		}
 
@@ -157,7 +158,7 @@ void ABase_Player::EndOverlapWithMusicTrigger(UPrimitiveComponent* OverlappedCom
 		enemiesInRange--;
 		if (enemiesInRange <= 0)
 		{
-			MusicActor->TransitionToIdle(); 
+			MusicActor->TransitionToIdle();
 			enemiesInRange = 0;
 		}
 
