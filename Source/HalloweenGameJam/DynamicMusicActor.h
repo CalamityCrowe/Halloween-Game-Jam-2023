@@ -48,10 +48,12 @@ protected:
 
 public:
 	// Called every frame
-	virtual void TickComponent(float DeltaTime,ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	float StyleMeter;
+
 	float LowerCap;
 	float IncreaseCap;
 	float DefaultValue;
@@ -60,13 +62,15 @@ private:
 	float LowerVolume;
 	float HigherVolume;
 
+	float PerformanceDecreaseTimer;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TEnumAsByte<EMusicState> CurrentMusicState;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	TEnumAsByte<ECombatPerformance> CurrentCombatPerformance;
 
 
-	TArray<UAudioComponent*> CombatAudioPlayers; 
+	TArray<UAudioComponent*> CombatAudioPlayers;
 
 
 	TObjectPtr<UAudioComponent> IdleAudioPlayer;
@@ -85,7 +89,10 @@ public:
 	EMusicState GetMusicState() const { return CurrentMusicState; }
 	void SetMusicState(EMusicState NewState) { CurrentMusicState = NewState; }
 
-	void IncreasePerformanceMeter(const float Increase) { StyleMeter += Increase; }
+	void IncreasePerformanceMeter(const float Increase) { StyleMeter += Increase; PerformanceDecreaseTimer = 0.f;  }
+
+
+
 
 
 	void TransitionToIdle();

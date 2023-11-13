@@ -95,6 +95,12 @@ private:
 	UFUNCTION()
 	void EndOverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	int enemiesInRange; 
+	int enemiesInRange;
+
+protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void CombatStarted();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CombatEnded(); 
 
 };

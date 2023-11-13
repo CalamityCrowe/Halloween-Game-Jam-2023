@@ -30,7 +30,7 @@ UDynamicMusicActor::UDynamicMusicActor()
 	IdleAudioPlayer->SetupAttachment(this);
 
 	CombatInitiatedAudioPlayer = CreateOptionalDefaultSubobject<UAudioComponent>(TEXT("InitiatedAudioPlayer"));
-	CombatInitiatedAudioPlayer->SetupAttachment(this); 
+	CombatInitiatedAudioPlayer->SetupAttachment(this);
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -69,6 +69,9 @@ void UDynamicMusicActor::BeginPlay()
 
 	}
 
+	IdleAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
+	SetMusicState(EMusicState::Idle);
+
 	//BaseAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear); 
 }
 
@@ -96,6 +99,13 @@ void UDynamicMusicActor::TickComponent(float DeltaTime, ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	PerformanceDecreaseTimer += DeltaTime;
+
+	if (PerformanceDecreaseTimer >= 1.5f && CurrentCombatPerformance != ECombatPerformance::None)
+	{
+		StyleMeter -= DeltaTime / 2;
+	}
 
 	switch (CurrentMusicState.GetValue())
 	{
