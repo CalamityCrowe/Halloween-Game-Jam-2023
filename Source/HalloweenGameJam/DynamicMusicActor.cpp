@@ -46,6 +46,7 @@ UDynamicMusicActor::UDynamicMusicActor()
 	CombatAudioPlayers[3] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Apocalyptic Player");
 	CombatAudioPlayers[4] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Sexy Player");
 
+
 	for (int i = 0; i < 5; i++) { CombatAudioPlayers[i]->SetupAttachment(this); }
 
 	//IdleAudioPlayer->SetVolumeMultiplier(BaseVolume);
@@ -70,7 +71,7 @@ void UDynamicMusicActor::BeginPlay()
 
 	}
 
-	CombatInitiatedAudioPlayer->SetSound(CombatInitiatedTrack); 
+	CombatInitiatedAudioPlayer->SetSound(CombatInitiatedTrack);
 
 	IdleAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 	SetMusicState(EMusicState::Idle);
