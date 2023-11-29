@@ -89,7 +89,14 @@ public:
 	EMusicState GetMusicState() const { return CurrentMusicState; }
 	void SetMusicState(EMusicState NewState) { CurrentMusicState = NewState; }
 
-	void IncreasePerformanceMeter(const float Increase) { StyleMeter += Increase; PerformanceDecreaseTimer = 0.f;  }
+	void IncreasePerformanceMeter(const float Increase)
+	{
+		if(CurrentCombatPerformance == ECombatPerformance::None)
+		{
+			StyleMeter = 2; // makes sure it switches into the fighting state correctly 
+		}
+		StyleMeter += Increase; PerformanceDecreaseTimer = 0.f;
+	}
 
 
 
