@@ -12,7 +12,7 @@ class UInputAction;
 class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
-class UDynamicMusicActor; 
+class UDynamicMusicActor;
 
 UCLASS()
 class HALLOWEENGAMEJAM_API ABase_Player : public ACharacter
@@ -39,31 +39,43 @@ public:
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<USpringArmComponent> CameraArm;
+		TObjectPtr<USpringArmComponent> CameraArm;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UCameraComponent> Camera;
+		TObjectPtr<UCameraComponent> Camera;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<USceneComponent> FirePoint;
+		TObjectPtr<USceneComponent> FirePoint;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<USphereComponent> RangeTrigger;
+		TObjectPtr<USphereComponent> RangeTrigger;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UDynamicMusicActor> MusicActor; 
+		TObjectPtr<UDynamicMusicActor> MusicActor;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> JumpAction;
+		TObjectPtr<UInputAction> JumpAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> MoveAction;
+		TObjectPtr<UInputAction> MoveAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> FireAction;
+		TObjectPtr<UInputAction> FireAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> LookAction;
+		TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Audio, meta = (AllowPrivateAccess = "true"))
+		TObjectPtr<UAudioComponent> FireAudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintAssignable, Category = Audio, meta = (AllowPrivateAccess = "true"))
+		TObjectPtr<USoundBase> FiringSoundBase;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Audio, meta = (AllowPrivateAccess = "true"))
+		TObjectPtr<UAudioComponent> StepsAudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintAssignable, Category = Audio, meta = (AllowPrivateAccess = "true"))
+		TObjectPtr<USoundBase> StepsSoundBase;
+
 
 	void Move(const FInputActionValue&);
 	void Turn(const FInputActionValue&);
@@ -73,7 +85,7 @@ private:
 	void FireWeapon(float);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	FEntity_Stats PlayerStats;
+		FEntity_Stats PlayerStats;
 
 
 public:
@@ -81,6 +93,9 @@ public:
 	TObjectPtr<USpringArmComponent> GetCameraArm() const { return CameraArm; }
 
 	FEntity_Stats GetPlayerStats()const { return PlayerStats; }
+
+	UFUNCTION(BlueprintCallable)
+		void PlayFootStepsAudio();
 
 private:
 	bool LineTraceMethod(FHitResult&);
@@ -91,16 +106,18 @@ private:
 	float timer;
 
 	UFUNCTION()
-	void OverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
-	void EndOverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void EndOverlapWithMusicTrigger(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	int enemiesInRange;
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
-	void CombatStarted();
+		void CombatStarted();
 	UFUNCTION(BlueprintImplementableEvent)
-	void CombatEnded(); 
+		void CombatEnded();
+
+
 
 };

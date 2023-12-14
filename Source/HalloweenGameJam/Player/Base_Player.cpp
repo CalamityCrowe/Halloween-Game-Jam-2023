@@ -46,6 +46,9 @@ ABase_Player::ABase_Player()
 
 	bisHeld = false;
 
+	FireAudioComponent = CreateOptionalDefaultSubobject<UAudioComponent>(TEXT("GunFireAudio"));
+	FireAudioComponent->SetupAttachment(GetCapsuleComponent()); 
+
 	enemiesInRange = 0;
 }
 
@@ -53,7 +56,11 @@ ABase_Player::ABase_Player()
 void ABase_Player::BeginPlay()
 {
 	Super::BeginPlay();
-
+	if(FiringSoundBase != nullptr)
+	{
+		FireAudioComponent->SetSound(FiringSoundBase);
+		FireAudioComponent->SetBoolParameter("Looping", false); 
+	}
 }
 
 // Called every frame
@@ -113,10 +120,22 @@ void ABase_Player::FireWeapon(float DeltaTime)
 				MusicActor->IncreasePerformanceMeter(0.03f);
 			}
 		}
+		if(FireAudioComponent->IsPlaying == false)
+		{
+			FireAudioComponent->Play(0.0f); 
+		}
 
 
 
 		timer = 0.f;
+	}
+}
+
+void ABase_Player::PlayFootStepsAudio()
+{
+	if(StepsAudioComponent != nullptr)
+	{
+		StepsAudioComponent->Play(0.0f); 
 	}
 }
 

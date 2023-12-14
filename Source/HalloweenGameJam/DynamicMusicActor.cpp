@@ -58,9 +58,11 @@ void UDynamicMusicActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	IdleAudioPlayer->SetSound(IdleTrack);
-	IdleAudioPlayer->SetBoolParameter("Looping", true);
-
+	if (IdleTrack != nullptr)
+	{
+		IdleAudioPlayer->SetSound(IdleTrack);
+		IdleAudioPlayer->SetBoolParameter("Looping", true);
+	}
 	for (int i = 0; i < CombatAudioPlayers.Num(); i++)
 	{
 		if (CombatTracks[i] != nullptr)
@@ -71,7 +73,10 @@ void UDynamicMusicActor::BeginPlay()
 
 	}
 
-	CombatInitiatedAudioPlayer->SetSound(CombatInitiatedTrack);
+	if (CombatInitiatedTrack != nullptr)
+	{
+		CombatInitiatedAudioPlayer->SetSound(CombatInitiatedTrack);
+	}
 
 	IdleAudioPlayer->FadeIn(3, 1, 0, EAudioFaderCurve::Linear);
 	SetMusicState(EMusicState::Idle);
