@@ -68,12 +68,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Audio, meta = (AllowPrivateAccess = "true"))
 		TObjectPtr<UAudioComponent> FireAudioComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintAssignable, Category = Audio, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Audio, meta = (AllowPrivateAccess = "true"))
 		TObjectPtr<USoundBase> FiringSoundBase;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Audio, meta = (AllowPrivateAccess = "true"))
 		TObjectPtr<UAudioComponent> StepsAudioComponent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintAssignable, Category = Audio, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Audio, meta = (AllowPrivateAccess = "true"))
 		TObjectPtr<USoundBase> StepsSoundBase;
 
 
