@@ -28,26 +28,22 @@ UDynamicMusicActor::UDynamicMusicActor()
 
 
 	IdleAudioPlayer = CreateOptionalDefaultSubobject<UAudioComponent>(TEXT("IdlePlayer"));
-	IdleAudioPlayer->SetupAttachment(this);
+	
 
 	CombatInitiatedAudioPlayer = CreateOptionalDefaultSubobject<UAudioComponent>(TEXT("InitiatedAudioPlayer"));
-	CombatInitiatedAudioPlayer->SetupAttachment(this);
 
-	for (int i = 0; i < 5; i++)
+	for (int Index = 0; Index < 5; ++Index)
 	{
 		CombatAudioPlayers.Add(TObjectPtr<UAudioComponent>());
 
 		CombatTracks.Add(TObjectPtr<USoundBase>());
+
+		FString PlayerName = FString::Printf(TEXT("Combat Player %d"), Index + 1);
+
+		CombatAudioPlayers[Index] = CreateOptionalDefaultSubobject<UAudioComponent>(*PlayerName);
 	}
 
-	CombatAudioPlayers[0] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Dope Player");
-	CombatAudioPlayers[1] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Crazy Player");
-	CombatAudioPlayers[2] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Badass Player");
-	CombatAudioPlayers[3] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Apocalyptic Player");
-	CombatAudioPlayers[4] = CreateOptionalDefaultSubobject<UAudioComponent>("Combat Sexy Player");
 
-
-	for (int i = 0; i < 5; i++) { CombatAudioPlayers[i]->SetupAttachment(this); }
 
 	//IdleAudioPlayer->SetVolumeMultiplier(BaseVolume);
 
@@ -152,7 +148,7 @@ void UDynamicMusicActor::TransitionToCombatInitiated()
 	IdleAudioPlayer->FadeOut(3, 0, EAudioFaderCurve::Linear);
 	CombatInitiatedAudioPlayer->FadeIn(3, 0.3f, 0, EAudioFaderCurve::Linear);
 	CurrentMusicState = EMusicState::Fighting;
-	
+
 }
 
 
